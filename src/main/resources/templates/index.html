@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+<style type="text/css">
+span,div{padding-left: 20px;}
+</style>
+</head>
+<body>
+在 application、session、request域中获取展示变量值<br/>
+<span th:text="${application.appName}">Welcome to our grocery store!</span><br/>
+<span th:text="${session.suser.name}">lisi</span><br/>
+<span th:text="${welcome}">Welcome to our grocery store!</span><br/>
+<span th:text="${req}">lisi</span><br/>
+<hr/>
+<div th:object="${session.suser}">
+    <p>Name: <span th:text="*{name}">Sebastian</span>.</p>
+    <p>age: <span th:text="*{age}">Pepper</span>.</p>
+    <p>id: <span th:text="*{id}">Saturn</span>.</p>
+</div>
+ 等效
+<div>
+    <p>Name: <span th:text="${session.suser.name}">Sebastian</span>.</p>
+    <p>age: <span th:text="${session.suser.age}">Pepper</span>.</p>
+    <p>id: <span th:text="${session.suser.id}">Saturn</span>.</p>
+  </div>
+  等效
+<div th:object="${session.suser}">
+    <p>Name: <span th:text="${#object.name}">Sebastian</span>.</p>
+    <p>age: <span th:text="${#object.age}">Pepper</span>.</p>
+    <p>id: <span th:text="${#object.id}">Saturn</span>.</p>
+</div>
+<hr/>
+Will produce 'http://localhost:8080/WebDemo/order/details?orderId=3' (plus rewriting)
+<a href="details.html" 
+   th:href="@{http://localhost:8080/WebDemo/order/details(orderId=${user.id})}">view</a><br/>
+
+Will produce '/WebDemo/order/details?orderId=3' (plus rewriting)
+<a href="details.html" th:href="@{/order/details(orderId=${user.id})}">view</a><br/>
+
+Will produce '/WebDemo/order/3/details' (plus rewriting)
+<a href="details.html" th:href="@{/order/{orderId}/details(orderId=${user.id})}">view</a><br/>
+Will produce '/path/to/something'
+<a href="details.html" th:href="@{~/path/to/something}">view</a><br/>
+<hr/>
+字符串类型：
+<p>
+  Now you are looking at a <span th:text="'working web application'">template file</span>.
+</p>
+字符串拼接：|用法相比字符串加好拼接可以简洁一些|<br/>
+<span th:text="|Welcome to our application, ${user.name}!|"></span><br/>相当于<br/>
+<span th:text="'Welcome to our application, ' + ${user.name} + '!'"></span>
+文字替换可以与其他类型的表达相结合:<br/>
+<span th:text="${welcome} + ' ' + |${user.name}, ${user.id}|"></span><br/>
+
+数字类型
+<p>The year is <span th:text="2013">1492</span>.</p>
+<p>In two years, it will be <span th:text="2013 + 2">1494</span>.</p>
+算数运算：<br/>
+<div th:with="isEven=(${user.age} % 2 == 0)">
+	<div th:if="${isEven}"> 偶数</div>
+</div>
+
+Boolean类型  & null类型
+<div th:if="${user.getIsAdmin()} == false"> isAdmin</div>
+<div th:if="${user.getIsAdmin()} == true"> notAdmin</div>
+<div th:if="${user.sex} == null">null</div>
+
+<br/>
+比较运算:<br/>
+<div th:if="${user.age} &gt; 17">成年了</div>
+<span th:text="'Execution mode is ' + ( (${welcome} == 'dev')? 'Development' : 'Production')"></span>
+<span th:text="${users[0].sex} ?: _">no user authenticated</span>
+<hr/>
+属性设置：<br/>
+使用 th:attr可以添加一些html之外的标签，大部分html5中的标签 thymeleaf中已经有相应的标签可以直接使用
+<form action="subscribe.html" th:attr="action=@{/subscribe}">
+  <fieldset>
+    <input type="text" name="email" />
+    <input type="submit" value="Subscribe" th:attr="value=${user.name}"/>
+  </fieldset>
+</form>
+<img src="images/thymeleaf.png" width="100" height="100"
+     th:attr="src=@{https://www.thymeleaf.org/images/thymeleaf.png},title=${welcome},alt=${welcome}" /><br/>
+ th:whatever 在thymeleaf 3.0可用 
+ <span th:whatever="${user.name}">th:whatever</span>    
+ <hr/>
+迭代：使用th：each<br/>
+<table>
+	<tr><th>NAME</th><th>age</th><th>sex</th></tr>
+	<tr th:each="p,iterStat : ${users}" th:class="${iterStat.odd}? 'odd'" th:index="${iterStat.index}"  th:count ="${iterStat.count}" th:isFirst="${iterStat.first}"  th:isLast="${iterStat.Last}">
+		<td th:text="${p.name}">Onions</td>
+		<td th:text="${p.age}">2.41</td>
+		<td th:text="${p.sex=='男'}? '男' : '女'">yes</td>
+	</tr>
+</table>
+如果您没有显式设置状态变量，Thymeleaf将始终通过后缀Stat为迭代变量的名称为您创建一个：
+<table>
+	<tr><th>NAME</th><th>age</th><th>sex</th></tr>
+	<tr th:each="p: ${users}" th:class="${pStat.odd}? 'odd'" th:index="${pStat.index}"  th:count ="${pStat.count}" th:isFirst="${pStat.first}"  th:isLast="${pStat.Last}">
+		<td th:text="${p.name}">Onions</td>
+		<td th:text="${p.age}">2.41</td>
+		<td th:text="${p.sex=='男'}? '男' : '女'">yes</td>
+	</tr>
+</table>
+ <hr/>
+条件分支：if else & switch<br/>
+
+如果value不为null：<br/>
+如果value是布尔值，则为true。<br/>
+如果value是数字且不为零<br/>
+如果value是一个字符且不为零<br/>
+如果value是String并且不是“false”，“off”或“no”<br/>
+如果value不是布尔值，数字，字符或字符串。<br/>
+（如果value为null，则th：if将计算为false）。<br/>
+<table>
+  <tr><th>NAME</th><th>id</th><th>isAdmin</th><th>children</th></tr>
+  <tr th:each="user : ${users}" th:class="${userStat.odd}? 'odd'">
+    <td th:text="${user.name}">Onions</td>
+    <td th:text="${user.id}">2.41</td>
+    <td th:text="${user.isAdmin}? '是' : '否'">yes</td>
+    <td>
+     <span th:text="${#lists.size(user.children)}">2</span> children/s
+     <a href="children.html" 
+         th:href="@{/useruct/comments(userId=${user.id})}" 
+         th:if="${not #lists.isEmpty(user.children)}">view</a>
+         等同
+     <a href="children.html" 
+         th:href="@{/useruct/comments(userId=${user.id})}" 
+         th:unless="${#lists.isEmpty(user.children)}">view</a>
+  </tr>
+</table>
+switch:<br/>
+<div th:switch="${user.role}">
+  <p th:case="1">User is an administrator</p>
+  <p th:case="2">User is a manager</p>
+</div>
+或<br/>
+<div th:switch="${user.role}">
+  <p th:case="${admin}">User is an administrator</p>
+  <p th:case="2">User is a manager</p>
+</div>
+<hr/>
+布局：<br/>
+其中主要的标签有 th:insert，th:replace;th:include（thymeleaf 3.0后不再推荐使用），<br/>
+th:insert：表示在该标签内部插入所指定的片段，本标签保留，目标片段自身标签保留；<br/>
+th:replace：表示将该标签直接进行替换成目标标签，本标签不保留，替换成目标标签。<br/>
+th:include:表示将目标标签内内容替换到到当前标签内部，本标签保留，目标标签不保留。<br/>
+
+<div th:insert="~{header :: header}" flag="me"></div>
+<div th:replace="~{header :: #headerid}" flag="me"></div>
+<div>这是身子</div>
+<div  th:replace="header :: footter" flag="me" >这是底部</div>
+
+<hr/>
+局部变量：使用 th:with 标签<br/>
+说明： th：with 所定义的变量只在该标签内部有效。
+<div th:with="firstPer=${users[0]},secondPer=${users[1]}">
+  <p>
+    The name of the first person is <span th:text="${firstPer.name}">Julius Caesar</span>.
+  </p>
+   <p>
+    But the name of the second person is 
+    <span th:text="${secondPer.name}">Marcus Antonius</span>.
+  </p>
+</div>
+<p>
+  Today is: 
+  <span th:text="${#calendars.format(today,'dd MMMM yyyy')}">13 february 2011</span>
+</p>
+<p th:with="df='yyyy-MMMM-dd  '">
+  Today is: <span th:text="${#calendars.format(today,df)}">13 February 2011</span>
+</p>
+<hr/>
+在html标签中直接插入<br/>
+<p>Hello, [[${user.name}]]!</p>
+之前可能需要这么写 <br/>
+<p>Hello, <span th:text="${user.name}">Sebastian</span>!</p>
+<p>Hello, [[${welcome2}]]!</p>
+<p>Hello, [(${welcome2})]!</p>
+禁用内联：
+<div th:inline="none">
+	[[${user.name}]] 和 [(${user.name})] 区别和  th:text 和 th:utext 区别效果一样 前者会将htl一些标签如 尖括号等转义，后者则不会。
+</div>
+
+</body>
+</html>
