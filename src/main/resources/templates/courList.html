@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+<style type="text/css">
+.odd{background: #ccc;}
+ table{ border-collapse:collapse; }
+</style>
+</head>
+<body>
+<table border="1" >
+	<tr><th>id</th><th>name</th><th>cour_desc</th></tr>
+	<tr th:each="cour,courStat : ${courList}" th:class="${courStat.odd}? 'odd'" th:index="${courStat.index}"  th:count ="${courStat.count}" th:isFirst="${courStat.first}"  th:isLast="${courStat.Last}">
+		<td th:text="${cour.courId}">Onions</td>
+		<td th:text="${cour.courName}">Onions</td>
+		<td th:text="${cour.courDesc}">Onions</td>
+	</tr>
+</table>
+</body>
+</html>

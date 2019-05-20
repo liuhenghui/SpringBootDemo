@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.demo.bean.Course;
 import com.demo.service.CourseService;
@@ -18,12 +18,11 @@ public class CourseController {
 	@Autowired
 	private CourseService courseService;
 	
-	@ResponseBody
 	@RequestMapping(value="/getCourList",method=RequestMethod.GET)
-	public List<Course> getCourList(Course course){
-		return courseService.getCourList(course);
+	public String getCourList(Course course,ModelMap mp){
+		List<Course> list = courseService.getCourList(course);
+		mp.put("courList", list);
+		return "courList";
 	}
-	
-	
 	
 }
