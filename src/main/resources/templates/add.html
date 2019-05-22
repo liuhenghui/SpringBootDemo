@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+<form method="post" th:action="@{/course/{method}/(method=${course.courId !=null ? 'updateCour':'addCour'})}">
+	<input name="courId" type="hidden" th:value="${course.courId}" />
+	<input name="userId" type="hidden" th:value="${course.userId}" />
+	<table>
+		<tr><td>name</td><td><input name="courName" th:value="${course.courName}" /> </td></tr>
+		<tr><td>desc</td><td><input name="courDesc" th:value="${course.courDesc}"/> </td></tr>
+		<tr><td colspan="2"><button type="submit">提交</button></td></tr>
+	</table>
+</form>
+</body>
+</html>
