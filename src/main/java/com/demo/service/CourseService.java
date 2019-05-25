@@ -9,7 +9,7 @@ public interface CourseService {
 
 	List<Course> getCourList(Course course);
 
-	int addCourse(Course course);
+	Course addCourse(Course course);
 
 	int delteCour(Course course);
 

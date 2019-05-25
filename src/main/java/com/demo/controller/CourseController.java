@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.demo.bean.Course;
 import com.demo.redis.RedisServiceImpl;
@@ -98,11 +100,11 @@ public class CourseController {
 	
 	//==================== redisTemplate 测试 =========================
 	@RequestMapping(value="/setCourVal",method=RequestMethod.GET)
-	public String setCourVal(String val){
+	public void setCourVal(String val){
 		redisService.set("testkey", val);
-		return "courList";
 	}
 	
+	@ResponseBody
 	@RequestMapping(value="/getCourVal",method=RequestMethod.GET)
 	public String getCourVal(String val){
 		return redisService.get("testkey");

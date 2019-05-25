@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.demo.bean.Course;
 import com.demo.bean.CourseExample;
-import com.demo.bean.CourseExample.Criteria;
 import com.demo.dao.CourseDao;
 import com.demo.service.CacheService;
 import com.demo.service.CourseService;
@@ -43,16 +42,17 @@ public class CourseServiceImpl implements CourseService {
 	
 	
 	/**
-	 * 新增课程，并清除该教师下的课程列表缓存
+	 * 新增课程，并更新该教师下的课程列表缓存
 	 */
 	@CachePut(value="redisCache",key="#course.courId")
 	@Override
-	public int addCourse(Course course) {
+	public Course addCourse(Course course) {
 		int insertSelective = courseDao.insertSelective(course);
 		if(insertSelective > 0){
 			cacheService.updateCourListCache(course);
+			return course;
 		}
-		return insertSelective;
+		return null;
 	}
 
 	/**
